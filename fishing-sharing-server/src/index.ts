@@ -6,19 +6,19 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 
-const typeDefs = `
-type Prefecture {
+const typeDefs = ` #graphql 
+type Place {
     id: Int
     name: String
     placeId: Int
   }
   
   type Query {
-    places: [Place]
+    places:[Place]
   }
 
   type Mutation {
-    DummyData: String
+    DummyData:[Place]
   }
 `;
 
@@ -32,12 +32,14 @@ const resolvers = {
   },
   Mutation: {
     DummyData: async () => {
-      await prisma.prefectures.createMany({
-        data: [
-          { placeId: 1, name: "Dummy 1" },
-          { placeId: 2, name: "Dummy 2" },
-        ],
+      const createdData1 = await prisma.prefectures.create({
+        data: { id: 100, name: "Dummy 1" },
       });
+      const createdData2 = await prisma.prefectures.create({
+        data: { id: 200, name: "Dummy 2" },
+      });
+
+      return [createdData1, createdData2];
     },
   },
 };

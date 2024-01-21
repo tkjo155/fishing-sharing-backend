@@ -12,12 +12,11 @@ model Places {
   id     Int  @id @default(autoincrement())
   name String
   placeId  Int 
-  prefectures Prefectures[]
+  prefecture Prefectures? @relation(fields: [placeId], references: [id])
 }
 
 model Prefectures {
   id     Int  @id @default(autoincrement())
-  placeId Int 
-  places  Places @relation(fields: [placeId], references: [id])
   name  String
+  places  Places[]
 }
