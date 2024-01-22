@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function prefecturesDatabase() {
-  await prisma.prefectures.createMany({
+  await prisma.prefecture.createMany({
     data: [
       { id: 1, name: "北海道" },
       { id: 2, name: "青森県" },

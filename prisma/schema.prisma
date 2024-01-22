@@ -8,15 +8,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Places {
-  id     Int  @id @default(autoincrement())
-  name String
-  placeId  Int 
-  prefecture Prefectures? @relation(fields: [placeId], references: [id])
-}
-
-model Prefectures {
+model Prefecture {
   id     Int  @id @default(autoincrement())
   name  String
-  places  Places[]
+  places Place[]
 }
+
+
+model Place {
+  id     Int  @id @default(autoincrement())
+  name String
+  prefecture   Prefecture @relation(fields: [prefectureId], references: [id])
+  prefectureId Int  
+}
+
