@@ -1,5 +1,5 @@
 import { ApolloServer } from "@apollo/server";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import express from "express";
@@ -26,40 +26,25 @@ type Place {
   }
 `;
 
-// createPlace 関数
-async function createPlace() {
-  try {
-    // 既存の Prefecture レコードを取得
-    const existingPrefecture = await prisma.prefecture.findFirst();
-    // Place テーブルにデータを挿入
-    const createdPlace = await prisma.place.create({
-      data: {
-        name: "鹿児島港",
-        prefectureId: existingPrefecture.id,
-      },
-    });
-    return createdPlace;
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+const getPlaces = async () => {
+  // ベタ書きPlace データ
+  const placesData = [
+    { id: 1, name: "鹿児島港", prefectureId: 1 },
+    { id: 2, name: "東京港", prefectureId: 2 },
+  ];
 
-createPlace();
+  return placesData;
+};
 
 const resolvers = {
   Query: {
-    //Prefecture データを取得し、それを返す
+    places: async () => {
+      const placesData = await getPlaces();
+      return placesData;
+    },
     prefectures: async () => {
       const prefecturesData = await prisma.prefecture.findMany();
       return prefecturesData;
-    },
-    places: async () => {
-      const createdPlace = await createPlace();
-      // createPlaceで作成したデータを取得
-      const placesData = await prisma.place.findMany();
-      return placesData;
     },
   },
 };
