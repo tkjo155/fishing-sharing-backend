@@ -26,20 +26,15 @@ type Place {
   }
 `;
 
-const getPlaces = async () => {
-  // ベタ書きPlace データ
-  const placesData = [
-    { id: 1, name: "鹿児島港", prefectureId: 1 },
-    { id: 2, name: "東京港", prefectureId: 2 },
-  ];
-
-  return placesData;
-};
+// ベタ書きPlace データ
+const placesData = [
+  { id: 1, name: "鹿児島港", prefectureId: 1 },
+  { id: 2, name: "東京港", prefectureId: 2 },
+];
 
 const resolvers = {
   Query: {
     places: async () => {
-      const placesData = await getPlaces();
       return placesData;
     },
     prefectures: async () => {
