@@ -2,6 +2,7 @@ import { ApolloServer } from "@apollo/server";
 import { PrismaClient } from "@prisma/client";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import createPlace from "./lib/createPlace";
 import express from "express";
 import http from "http";
 import cors from "cors";
@@ -24,6 +25,14 @@ type Place {
     places:[Place]
     prefectures: [Prefecture]
   }
+
+  input CreatePlace {
+    name: String
+    prefectureId: Int
+  }
+  type Mutation {
+    createPlace(create:CreatePlace):Place
+  }
 `;
 
 // ベタ書きPlace データ
@@ -33,14 +42,22 @@ const placesData = [
 ];
 
 const resolvers = {
+  //データ取得
   Query: {
-    places: async () => {
+    places: () => {
       return placesData;
     },
     prefectures: async () => {
       const prefecturesData = await prisma.prefecture.findMany();
       return prefecturesData;
     },
+  },
+  //データ更新
+  Mutation: {
+    //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
+    createPlace: async (_: any, { create: { name, prefectureId } }) =>
+      //createTask関数にその引数を渡してあげる
+      await createPlace(name, prefectureId),
   },
 };
 export default resolvers;
