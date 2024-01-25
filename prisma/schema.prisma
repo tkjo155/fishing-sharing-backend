@@ -1,0 +1,26 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Place {
+  id     Int  @id @default(autoincrement())
+  name String
+  prefectureId Int 
+  prefecture   Prefecture @relation(fields: [prefectureId], references: [id])
+}
+
+model Prefecture {
+  id     Int  @id @default(autoincrement())
+  name  String
+  places Place[]
+}
+
+
+
+
