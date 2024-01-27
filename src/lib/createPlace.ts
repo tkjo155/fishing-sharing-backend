@@ -1,12 +1,13 @@
 import { PrismaClient, Place } from "@prisma/client";
 const MAX_NAME_LENGTH = 50;
+const MIN_NAME_LENGTH = 0;
 
 //PrismaClientのインスタンスを作成(クライアントを通じて、PrismaがDBに対して行う操作（クエリやミューテーションなど）を実行できる)
 //prismaを使用できるようにする
 const prisma = new PrismaClient();
 // name の文字列の指定文字数について検証(検証対象を引数に)
 const validateParameterLength = (name: string) => {
-  if ((name = "")) {
+  if (name.length === MIN_NAME_LENGTH) {
     throw new Error(`Invalid Parameter: Name is required`);
   }
   if (name.length >= MAX_NAME_LENGTH) {
@@ -24,7 +25,7 @@ const createPlace = async (
   try {
     validateParameterLength(name);
     // Prismaを使用して新しいplaceをデータベースに作成
-    const result = await prisma.place.create({
+    const placeData = await prisma.place.create({
       data: {
         name: name,
         prefectureId: prefectureId,
@@ -33,7 +34,7 @@ const createPlace = async (
     //データベースとの対話が完了したらprisma接続を閉じる
     await prisma.$disconnect();
     //作成されたplaceを返す
-    return result;
+    return placeData;
     //検証エラーまたはデータベースエラーが発生した場合、エラーメッセージをコンソールに出力し、その後エラーを再度スローして呼び出し元に伝える
   } catch (err) {
     //データベースとの対話が完了したらprisma接続を閉じる
