@@ -35,16 +35,10 @@ type Place {
   }
 `;
 
-// ベタ書きPlace データ
-const placesData = [
-  { id: 1, name: "鹿児島港", prefectureId: 1 },
-  { id: 2, name: "東京港", prefectureId: 2 },
-];
-
 const resolvers = {
-  //データ取得
   Query: {
-    places: () => {
+    places: async () => {
+      const placesData = await prisma.place.findMany();
       return placesData;
     },
     prefectures: async () => {
@@ -56,7 +50,7 @@ const resolvers = {
   Mutation: {
     //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
     createPlace: async (_: any, { create: { name, prefectureId } }) =>
-      //createTask関数にその引数を渡してあげる
+      //createPlace関数にその引数を渡してあげる
       await createPlace(name, prefectureId),
   },
 };

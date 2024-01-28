@@ -1,13 +1,12 @@
 import { PrismaClient, Place } from "@prisma/client";
 const MAX_NAME_LENGTH = 50;
-const MIN_NAME_LENGTH = 0;
 
 //PrismaClientのインスタンスを作成(クライアントを通じて、PrismaがDBに対して行う操作（クエリやミューテーションなど）を実行できる)
 //prismaを使用できるようにする
 const prisma = new PrismaClient();
 // name の文字列の指定文字数について検証(検証対象を引数に)
 const validateParameterLength = (name: string) => {
-  if (name.length === MIN_NAME_LENGTH) {
+  if (!name.length) {
     throw new Error(`Invalid Parameter: Name is required`);
   }
   if (name.length >= MAX_NAME_LENGTH) {
