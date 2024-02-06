@@ -67,7 +67,9 @@ const resolvers = {
       });
     },
     prefectures: async () => {
+      //dbからデータを取得し (Prisma を使用してデータベースと対話し)て、「都道府県」テーブルからデータをフェッチするのをまつ
       const prefecturesData = await prisma.prefecture.findMany();
+      //そのデータを返す
       return prefecturesData;
     },
   },
@@ -75,11 +77,11 @@ const resolvers = {
   Mutation: {
     //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
     createPlace: async (_: any, { create: { name, prefectureId } }) => {
-      //createPlace関数にその引数を渡してあげる
-      await createPlace(name, prefectureId);
+      return await createPlace(name, prefectureId);
     },
   },
 };
+
 export default resolvers;
 
 const app = express();
