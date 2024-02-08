@@ -13,7 +13,7 @@ const typeDefs = ` #graphql
 type Place {
     id: ID!
     name: String
-    prefectureId: Int
+    prefecture:String
   }
 
   type Prefecture {
@@ -30,30 +30,58 @@ type Place {
     name: String
     prefectureId: Int
   }
-  type Mutation {
-    createPlace(create:CreatePlace):Place
+
+  type InputPlace{
+    id: ID!
+    name:String
+    prefectureId:Int
   }
+
+  type Mutation {
+    createPlace(create:CreatePlace):InputPlace
+  }
+
 `;
 
 const resolvers = {
   Query: {
     places: async () => {
-      const placesData = await prisma.place.findMany();
-      return placesData;
+      const placesData = await prisma.place.findMany({
+        //inclodeは全てのplaceデータ＋リレーションしているprefectureのnameを含ませることができる
+        include: {
+          prefecture: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+      //取得したデータをGraphQLレスポンスで返す前に変換する
+      return placesData.map((place) => {
+        return {
+          id: place.id,
+          name: place.name,
+          // 関連するprefectureから'name'を抽出する。
+          prefecture: place.prefecture.name,
+        };
+      });
     },
     prefectures: async () => {
+      //dbからデータを取得し (Prisma を使用してデータベースと対話し)て、「都道府県」テーブルからデータをフェッチするのをまつ
       const prefecturesData = await prisma.prefecture.findMany();
+      //そのデータを返す
       return prefecturesData;
     },
   },
   //データ更新
   Mutation: {
     //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
-    createPlace: async (_: any, { create: { name, prefectureId } }) =>
-      //createPlace関数にその引数を渡してあげる
-      await createPlace(name, prefectureId),
+    createPlace: async (_: any, { create: { name, prefectureId } }) => {
+      return await createPlace(name, prefectureId);
+    },
   },
 };
+
 export default resolvers;
 
 const app = express();
@@ -78,4 +106,5 @@ app.use(
 await new Promise<void>((resolve) =>
   httpServer.listen({ port: 4000 }, resolve)
 );
+
 console.log(`🚀 Server ready at http://localhost:4000`);
