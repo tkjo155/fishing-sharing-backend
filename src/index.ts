@@ -20,10 +20,26 @@ type Place {
     id: ID!
     name: String
   }
+
+  type FishLog {
+    id: ID!
+    placeId: Int
+    data: String
+    image: String
+    fishName: String
+    weather: String
+    size: Int
+    isSpringTide: Boolean
+    isMiddleTide: Boolean
+    isNeapTide: Boolean
+    isNagashio: Boolean
+    isWakashio: Boolean
+  }
   
   type Query {
     places:[Place]
     prefectures: [Prefecture]
+    fishLogs: [FishLog] 
   }
 
   input CreatePlace {
@@ -42,6 +58,23 @@ type Place {
   }
 
 `;
+
+const dummyFishLogs = [
+  {
+    id: 1,
+    placeId: 1,
+    data: "2024-02-13",
+    image: "image1.jpg",
+    fishName: "Dummy Fish 1",
+    weather: "Sunny",
+    size: 10,
+    isSpringTide: true,
+    isMiddleTide: false,
+    isNeapTide: false,
+    isNagashio: true,
+    isWakashio: false,
+  },
+];
 
 const resolvers = {
   Query: {
@@ -65,6 +98,9 @@ const resolvers = {
           prefecture: place.prefecture.name,
         };
       });
+    },
+    fishLogs: async () => {
+      return dummyFishLogs; // ダミーデータを返す
     },
     prefectures: async () => {
       //dbからデータを取得し (Prisma を使用してデータベースと対話し)て、「都道府県」テーブルからデータをフェッチするのをまつ
