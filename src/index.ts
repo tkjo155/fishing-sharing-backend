@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import createPlace from "./lib/createPlace";
-import createFishLog from "./lib/createFishlogs";
+import createFishLog from "./lib/createFishlog";
 import express from "express";
 import http from "http";
 import cors from "cors";
