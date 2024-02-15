@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import createPlace from "./lib/createPlace";
+import createFishLog from "./lib/createFishlogs";
 import express from "express";
 import http from "http";
 import cors from "cors";
@@ -23,8 +24,7 @@ type Place {
 
   type FishLog {
     id: ID!
-    placeId: Int
-    data: String
+    date: String
     image: String
     fishName: String
     weather: String
@@ -47,34 +47,46 @@ type Place {
     prefectureId: Int
   }
 
+  input CreateFishLog{
+    placeId:Int,
+    date: String,
+    image: String,
+    fishName: String,
+    weather: String,
+    size: Int,
+    isSpringTide: Boolean,
+    isMiddleTide: Boolean,
+    isNeapTide: Boolean,
+    isNagashio: Boolean,
+    isWakashio: Boolean
+  }
+
   type InputPlace{
     id: ID!
     name:String
     prefectureId:Int
   }
 
+  type InputFishLog{
+    id: ID!
+    date: String,
+    image: String,
+    fishName: String,
+    weather: String,
+    size: Int,
+    isSpringTide: Boolean,
+    isMiddleTide: Boolean,
+    isNeapTide: Boolean,
+    isNagashio: Boolean,
+    isWakashio: Boolean
+  }
+
   type Mutation {
-    createPlace(create:CreatePlace):InputPlace
+    createPlace(create:CreatePlace):InputPlace,
+    createFishLog(create:CreateFishLog):InputFishLog
   }
 
 `;
-
-const dummyFishLogs = [
-  {
-    id: 1,
-    placeId: 1,
-    data: "2024-02-13",
-    image: "image1.jpg",
-    fishName: "Dummy Fish 1",
-    weather: "Sunny",
-    size: 10,
-    isSpringTide: true,
-    isMiddleTide: false,
-    isNeapTide: false,
-    isNagashio: true,
-    isWakashio: false,
-  },
-];
 
 const resolvers = {
   Query: {
@@ -99,14 +111,48 @@ const resolvers = {
         };
       });
     },
-    fishLogs: async () => {
-      return dummyFishLogs; // ダミーデータを返す
-    },
     prefectures: async () => {
       //dbからデータを取得し (Prisma を使用してデータベースと対話し)て、「都道府県」テーブルからデータをフェッチするのをまつ
       const prefecturesData = await prisma.prefecture.findMany();
       //そのデータを返す
       return prefecturesData;
+    },
+    fishLogs: async () => {
+      const fishLogsData = await prisma.fishLog.findMany({
+        // Placeを含ませる
+        include: {
+          place: {
+            select: {
+              name: true,
+              prefecture: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      //取得したデータをGraphQLレスポンスで返す前に変換する
+      return fishLogsData.map((fishLog) => {
+        return {
+          id: fishLog.id,
+          place: {
+            name: fishLog.place.name,
+            prefecture: fishLog.place.prefecture.name,
+          },
+          date: fishLog.date,
+          image: fishLog.image,
+          fishName: fishLog.fishName,
+          weather: fishLog.weather,
+          size: fishLog.size,
+          isSpringTide: fishLog.isSpringTide,
+          isMiddleTide: fishLog.isMiddleTide,
+          isNeapTide: fishLog.isNeapTide,
+          isNagashio: fishLog.isNagashio,
+          isWakashio: fishLog.isWakashio,
+        };
+      });
     },
   },
   //データ更新
@@ -114,6 +160,38 @@ const resolvers = {
     //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
     createPlace: async (_: any, { create: { name, prefectureId } }) => {
       return await createPlace(name, prefectureId);
+    },
+    createFishLog: async (
+      _: any,
+      {
+        create: {
+          placeId,
+          date,
+          image,
+          fishName,
+          weather,
+          size,
+          isSpringTide,
+          isMiddleTide,
+          isNeapTide,
+          isNagashio,
+          isWakashio,
+        },
+      }
+    ) => {
+      return await createFishLog(
+        placeId,
+        date,
+        image,
+        fishName,
+        weather,
+        size,
+        isSpringTide,
+        isMiddleTide,
+        isNeapTide,
+        isNagashio,
+        isWakashio
+      );
     },
   },
 };
