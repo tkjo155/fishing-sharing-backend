@@ -1,24 +1,41 @@
 
 generator client {
-  provider = "prisma-client-js"
+ provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+ provider = "postgresql"
+ url      = env("DATABASE_URL")
 }
 
 model Place {
-  id     Int  @id @default(autoincrement())
-  name String
-  prefectureId Int 
-  prefecture   Prefecture @relation(fields: [prefectureId], references: [id])
+ id     Int  @id @default(autoincrement())
+ name String
+ prefectureId Int 
+ prefecture   Prefecture @relation(fields: [prefectureId], references: [id])
+ fishLogs FishLog[] 
 }
 
 model Prefecture {
-  id     Int  @id @default(autoincrement())
-  name  String
-  places Place[]
+ id     Int  @id @default(autoincrement())
+ name  String
+ places Place[]
+}
+
+model FishLog {
+ id Int @id @default(autoincrement())
+ placeId Int
+ data String
+ image String
+ fishName String
+ weather String
+ size Int
+ isSpringTide Boolean
+ isMiddleTide Boolean
+ isNeapTide Boolean
+ isNagashio Boolean
+ isWakashio Boolean
+ place Place @relation(fields: [placeId], references: [id])
 }
 
 
