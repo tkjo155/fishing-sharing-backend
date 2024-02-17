@@ -157,7 +157,6 @@ const resolvers = {
   },
   //データ更新
   Mutation: {
-    //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
     createPlace: async (_: any, { create: { name, prefectureId } }) => {
       return await createPlace(name, prefectureId);
     },
