@@ -25,7 +25,7 @@ model Prefecture {
 model FishLog {
  id Int @id @default(autoincrement())
  placeId Int
- data String
+ date String
  image String
  fishName String
  weather String
