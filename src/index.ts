@@ -24,7 +24,7 @@ type Place {
 
   type FishLog {
     id: ID!
-    place: String
+    place: Place
     date: String
     image: String
     fishName: String
@@ -70,6 +70,7 @@ type Place {
 
   type InputFishLog{
     id: ID!
+    placeId:Int,
     date: String,
     image: String,
     fishName: String,
@@ -134,6 +135,7 @@ const resolvers = {
           },
         },
       })
+
       //取得したデータをGraphQLレスポンスで返す前に変換する
       return fishLogsData.map((fishLog) => {
         return {
@@ -156,6 +158,7 @@ const resolvers = {
       })
     },
   },
+
   //データ更新
   Mutation: {
     //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
