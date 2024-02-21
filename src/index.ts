@@ -24,7 +24,7 @@ type Place {
 
   type FishLog {
     id: ID!
-    place: Place
+    placeName:String
     date: String
     image: String
     fishName: String
@@ -126,11 +126,6 @@ const resolvers = {
           place: {
             select: {
               name: true,
-              prefecture: {
-                select: {
-                  name: true,
-                },
-              },
             },
           },
         },
@@ -140,10 +135,7 @@ const resolvers = {
       return fishLogsData.map((fishLog) => {
         return {
           id: fishLog.id,
-          place: {
-            name: fishLog.place.name,
-            prefecture: fishLog.place.prefecture.name,
-          },
+          placeName: fishLog.place.name,
           date: fishLog.date,
           image: fishLog.image,
           fishName: fishLog.fishName,
