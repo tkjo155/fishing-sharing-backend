@@ -38,7 +38,7 @@ type Place {
   }
   
   type Query {
-    places:[Place]
+    getPlace(id:Int!): Place
     prefectures: [Prefecture]
     fishLogs: [FishLog] 
   }
@@ -92,27 +92,6 @@ type Place {
 
 const resolvers = {
   Query: {
-    places: async () => {
-      const placesData = await prisma.place.findMany({
-        //inclodeは全てのplaceデータ＋リレーションしているprefectureのnameを含ませることができる
-        include: {
-          prefecture: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      })
-      //取得したデータをGraphQLレスポンスで返す前に変換する
-      return placesData.map((place) => {
-        return {
-          id: place.id,
-          name: place.name,
-          // 関連するprefectureから'name'を抽出する。
-          prefecture: place.prefecture.name,
-        }
-      })
-    },
     prefectures: async () => {
       //dbからデータを取得し (Prisma を使用してデータベースと対話し)て、「都道府県」テーブルからデータをフェッチするのをまつ
       const prefecturesData = await prisma.prefecture.findMany()
@@ -149,18 +128,57 @@ const resolvers = {
         }
       })
     },
-  },
-
-  //データ更新
-  Mutation: {
-    //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
-    createPlace: async (_: any, { create: { name, prefectureId } }) => {
-      return await createPlace(name, prefectureId)
+    getPlace: async (_, { id }) => {
+      const placeData = await prisma.place.findUnique({
+        //特定の場所のデータを取得
+        where: {
+          id: id,
+        },
+        // prefectureを含ませる
+        include: {
+          prefecture: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      })
+      //指定されたplaceが見つかったか確認
+      return (
+        placeData && {
+          //placeが見つかったらデータを返す
+          id: placeData.id,
+          name: placeData.name,
+          prefecture: placeData.prefecture.name,
+        }
+      )
     },
-    createFishLog: async (
-      _: any,
-      {
-        create: {
+
+    //データ更新
+    Mutation: {
+      //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
+      createPlace: async (_: any, { create: { name, prefectureId } }) => {
+        return await createPlace(name, prefectureId)
+      },
+      createFishLog: async (
+        _: any,
+        {
+          create: {
+            placeId,
+            date,
+            image,
+            fishName,
+            weather,
+            size,
+            isSpringTide,
+            isMiddleTide,
+            isNeapTide,
+            isNagashio,
+            isWakashio,
+          },
+        },
+      ) => {
+        return await createFishLog(
           placeId,
           date,
           image,
@@ -172,22 +190,8 @@ const resolvers = {
           isNeapTide,
           isNagashio,
           isWakashio,
-        },
+        )
       },
-    ) => {
-      return await createFishLog(
-        placeId,
-        date,
-        image,
-        fishName,
-        weather,
-        size,
-        isSpringTide,
-        isMiddleTide,
-        isNeapTide,
-        isNagashio,
-        isWakashio,
-      )
     },
   },
 }
