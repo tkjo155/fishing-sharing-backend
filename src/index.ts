@@ -132,14 +132,15 @@ const resolvers = {
         },
       })
       //指定されたplaceが見つかったか確認
-      return (
-        placeData && {
-          //placeが見つかったらデータを返す
+      if (placeData) {
+        return {
           id: placeData.id,
           name: placeData.name,
           prefecture: placeData.prefecture.name,
         }
-      )
+      } else {
+        return null
+      }
     },
     prefectures: async () => {
       //dbからデータを取得し (Prisma を使用してデータベースと対話し)て、「都道府県」テーブルからデータをフェッチするのをまつ
