@@ -131,15 +131,10 @@ const resolvers = {
           },
         },
       })
-      //指定されたplaceが見つかったか確認
-      if (placeData) {
-        return {
-          id: placeData.id,
-          name: placeData.name,
-          prefecture: placeData.prefecture.name,
-        }
-      } else {
-        return null
+      return {
+        id: placeData.id,
+        name: placeData.name,
+        prefecture: placeData.prefecture.name,
       }
     },
     prefectures: async () => {
