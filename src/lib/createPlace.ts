@@ -11,7 +11,7 @@ const validateParameterLength = (name: string) => {
   }
   if (name.length >= MAX_NAME_LENGTH) {
     throw new Error(
-      `Invalid Parameter:To ${MAX_NAME_LENGTH}characters can be entered`
+      `Invalid Parameter:To${MAX_NAME_LENGTH}characters can be entered`
     );
   }
 };

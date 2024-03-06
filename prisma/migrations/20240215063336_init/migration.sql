@@ -19,7 +19,7 @@ CREATE TABLE "Prefecture" (
 CREATE TABLE "FishLog" (
     "id" SERIAL NOT NULL,
     "placeId" INTEGER NOT NULL,
-    "data" TEXT NOT NULL,
+    "date" TEXT NOT NULL,
     "image" TEXT NOT NULL,
     "fishName" TEXT NOT NULL,
     "weather" TEXT NOT NULL,

@@ -24,7 +24,7 @@ type Place {
 
   type FishLog {
     id: ID!
-    place: String
+    placeName:String
     date: String
     image: String
     fishName: String
@@ -37,11 +37,7 @@ type Place {
     isWakashio: Boolean
   }
   
-  type Query {
-    places:[Place]
-    prefectures: [Prefecture]
-    fishLogs: [FishLog] 
-  }
+  
 
   input CreatePlace {
     name: String
@@ -70,6 +66,7 @@ type Place {
 
   type InputFishLog{
     id: ID!
+    placeId:Int,
     date: String,
     image: String,
     fishName: String,
@@ -82,6 +79,13 @@ type Place {
     isWakashio: Boolean
   }
 
+  type Query {
+    getPlace(id:Int!): Place
+    getAllPlaces:[Place]
+    prefectures: [Prefecture]
+    fishLogs: [FishLog] 
+  }
+
   type Mutation {
     createPlace(create:CreatePlace):InputPlace,
     createFishLog(create:CreateFishLog):InputFishLog
@@ -91,7 +95,7 @@ type Place {
 
 const resolvers = {
   Query: {
-    places: async () => {
+    getAllPlaces: async () => {
       const placesData = await prisma.place.findMany({
         //inclodeは全てのplaceデータ＋リレーションしているprefectureのnameを含ませることができる
         include: {
@@ -112,6 +116,27 @@ const resolvers = {
         }
       })
     },
+    getPlace: async (_, { id }) => {
+      const placeData = await prisma.place.findUnique({
+        //特定の場所のデータを取得
+        where: {
+          id: id,
+        },
+        // prefectureを含ませる
+        include: {
+          prefecture: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      })
+      return {
+        id: placeData.id,
+        name: placeData.name,
+        prefecture: placeData.prefecture.name,
+      }
+    },
     prefectures: async () => {
       //dbからデータを取得し (Prisma を使用してデータベースと対話し)て、「都道府県」テーブルからデータをフェッチするのをまつ
       const prefecturesData = await prisma.prefecture.findMany()
@@ -125,23 +150,16 @@ const resolvers = {
           place: {
             select: {
               name: true,
-              prefecture: {
-                select: {
-                  name: true,
-                },
-              },
             },
           },
         },
       })
+
       //取得したデータをGraphQLレスポンスで返す前に変換する
       return fishLogsData.map((fishLog) => {
         return {
           id: fishLog.id,
-          place: {
-            name: fishLog.place.name,
-            prefecture: fishLog.place.prefecture.name,
-          },
+          placeName: fishLog.place.name,
           date: fishLog.date,
           image: fishLog.image,
           fishName: fishLog.fishName,
@@ -156,6 +174,7 @@ const resolvers = {
       })
     },
   },
+
   //データ更新
   Mutation: {
     //指定した引数を受け取ったら(apollo特有で第一引数になんかいて、第一引数は使わないから、_:anyって書く)
