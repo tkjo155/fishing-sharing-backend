@@ -83,6 +83,7 @@ type Place {
     getPlace(id:Int!): Place
     getAllPlaces:[Place]
     prefectures: [Prefecture]
+    getFishLog(id:Int!): FishLog
     fishLogs: [FishLog] 
   }
 
@@ -172,6 +173,35 @@ const resolvers = {
           isWakashio: fishLog.isWakashio,
         }
       })
+    },
+    getFishLog: async (_, { id }) => {
+      const fishLogData = await prisma.fishLog.findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          place: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+  
+      return {
+        id: fishLogData.id,
+        placeName: fishLogData.place.name,
+        date: fishLogData.date,
+        image: fishLogData.image,
+        fishName: fishLogData.fishName,
+        weather: fishLogData.weather,
+        size: fishLogData.size,
+        isSpringTide: fishLogData.isSpringTide,
+        isMiddleTide: fishLogData.isMiddleTide,
+        isNeapTide: fishLogData.isNeapTide,
+        isNagashio: fishLogData.isNagashio,
+        isWakashio: fishLogData.isWakashio,
+      };
     },
   },
 
