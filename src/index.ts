@@ -24,6 +24,7 @@ type Place {
 
   type FishLog {
     id: ID!
+    placeId:ID
     placeName:String
     date: String
     image: String
@@ -83,7 +84,7 @@ type Place {
     getPlace(id:Int!): Place
     getAllPlaces:[Place]
     prefectures: [Prefecture]
-    getFishLog(id:Int!): FishLog
+    getFishLogs(placeId: Int!): [FishLog]
     fishLogs: [FishLog] 
   }
 
@@ -160,6 +161,7 @@ const resolvers = {
       return fishLogsData.map((fishLog) => {
         return {
           id: fishLog.id,
+          placeId: fishLog.placeId,
           placeName: fishLog.place.name,
           date: fishLog.date,
           image: fishLog.image,
@@ -174,10 +176,10 @@ const resolvers = {
         }
       })
     },
-    getFishLog: async (_, { id }) => {
-      const fishLogData = await prisma.fishLog.findUnique({
+    getFishLogs: async (_, { placeId }) => {
+      const fishLogs = await prisma.fishLog.findMany({
         where: {
-          id: id,
+          placeId: placeId,
         },
         include: {
           place: {
@@ -187,23 +189,23 @@ const resolvers = {
           },
         },
       });
-  
-      return {
-        id: fishLogData.id,
-        placeName: fishLogData.place.name,
-        date: fishLogData.date,
-        image: fishLogData.image,
-        fishName: fishLogData.fishName,
-        weather: fishLogData.weather,
-        size: fishLogData.size,
-        isSpringTide: fishLogData.isSpringTide,
-        isMiddleTide: fishLogData.isMiddleTide,
-        isNeapTide: fishLogData.isNeapTide,
-        isNagashio: fishLogData.isNagashio,
-        isWakashio: fishLogData.isWakashio,
-      };
-    },
-  },
+    
+      return fishLogs.map(fishLog => ({
+        id: fishLog.id,
+        placeId: fishLog.placeId,
+        placeName:fishLog.place.name,
+        date: fishLog.date,
+        image: fishLog.image,
+        fishName: fishLog.fishName,
+        weather: fishLog.weather,
+        size: fishLog.size,
+        isSpringTide: fishLog.isSpringTide,
+        isMiddleTide: fishLog.isMiddleTide,
+        isNeapTide: fishLog.isNeapTide,
+        isNagashio: fishLog.isNagashio,
+        isWakashio: fishLog.isWakashio,
+      }));
+    },},
 
   //データ更新
   Mutation: {
