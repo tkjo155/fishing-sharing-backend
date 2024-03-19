@@ -24,7 +24,7 @@ type Place {
 
   type FishLog {
     id: ID!
-    placeId:ID
+    placeId: Int
     placeName:String
     date: String
     image: String
@@ -84,8 +84,8 @@ type Place {
     getPlace(id:Int!): Place
     getAllPlaces:[Place]
     prefectures: [Prefecture]
-    getFishLogs(placeId: Int!): [FishLog]
-    fishLogs: [FishLog] 
+    getFishLog(id:Int!): [FishLog]
+    fishLogs(placeId: Int): [FishLog] 
   }
 
   type Mutation {
@@ -145,9 +145,11 @@ const resolvers = {
       //そのデータを返す
       return prefecturesData
     },
-    fishLogs: async () => {
-      const fishLogsData = await prisma.fishLog.findMany({
-        // Placeを含ませる
+    fishLogs: async (_, {placeId }) => {
+      const fishLogs = await prisma.fishLog.findMany({
+        where: {
+          placeId: placeId,
+        },
         include: {
           place: {
             select: {
@@ -158,28 +160,20 @@ const resolvers = {
       })
 
       //取得したデータをGraphQLレスポンスで返す前に変換する
-      return fishLogsData.map((fishLog) => {
+      return fishLogs.map((fishLog) => {
         return {
           id: fishLog.id,
           placeId: fishLog.placeId,
           placeName: fishLog.place.name,
           date: fishLog.date,
-          image: fishLog.image,
           fishName: fishLog.fishName,
-          weather: fishLog.weather,
-          size: fishLog.size,
-          isSpringTide: fishLog.isSpringTide,
-          isMiddleTide: fishLog.isMiddleTide,
-          isNeapTide: fishLog.isNeapTide,
-          isNagashio: fishLog.isNagashio,
-          isWakashio: fishLog.isWakashio,
         }
       })
     },
-    getFishLogs: async (_, { placeId }) => {
+    getFishLog: async (_, {id }) => {
       const fishLogs = await prisma.fishLog.findMany({
         where: {
-          placeId: placeId,
+          id: id,
         },
         include: {
           place: {
@@ -192,7 +186,6 @@ const resolvers = {
     
       return fishLogs.map(fishLog => ({
         id: fishLog.id,
-        placeId: fishLog.placeId,
         placeName:fishLog.place.name,
         date: fishLog.date,
         image: fishLog.image,
