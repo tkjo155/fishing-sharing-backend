@@ -4,6 +4,7 @@ import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
 import createPlace from './lib/createPlace'
 import createFishLog from './lib/createFishlogs'
+import deletePlace from './lib/deleteFishlogs'
 import express from 'express'
 import http from 'http'
 import cors from 'cors'
@@ -86,6 +87,10 @@ type Place {
     isWakashio: Boolean
   }
 
+  input DeletePlace {
+    id:ID
+  }
+
   type Query {
     getPlace(id:Int!): Place
     getAllPlaces:[Place]
@@ -97,6 +102,7 @@ type Place {
   type Mutation {
     createPlace(create:CreatePlace):InputPlace,
     createFishLog(create:CreateFishLog):InputFishLog
+    deletePlace(delete:DeletePlace):Place
   }
 
 `
@@ -244,8 +250,9 @@ const resolvers = {
         isWakashio,
       )
     },
+    deletePlace: async (_: any, { delete: { id } }) => await deletePlace(id),
   },
-}
+  }
 
 export default resolvers
 
