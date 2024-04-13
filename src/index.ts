@@ -22,8 +22,17 @@ type Place {
     name: String
   }
 
+  type FishLogs {
+    id: ID!
+    placeId: Int
+    placeName:String
+    date: String
+    fishName: String
+  }
+
   type FishLog {
     id: ID!
+    placeId: Int
     placeName:String
     date: String
     image: String
@@ -37,8 +46,6 @@ type Place {
     isWakashio: Boolean
   }
   
-  
-
   input CreatePlace {
     name: String
     prefectureId: Int
@@ -66,7 +73,7 @@ type Place {
 
   type InputFishLog{
     id: ID!
-    placeId:Int,
+    placeId:Int
     date: String,
     image: String,
     fishName: String,
@@ -83,7 +90,8 @@ type Place {
     getPlace(id:Int!): Place
     getAllPlaces:[Place]
     prefectures: [Prefecture]
-    fishLogs: [FishLog] 
+    getFishLog(id:Int): FishLog
+    getFishLogs(placeId: Int): [FishLogs]
   }
 
   type Mutation {
@@ -143,9 +151,11 @@ const resolvers = {
       //そのデータを返す
       return prefecturesData
     },
-    fishLogs: async () => {
-      const fishLogsData = await prisma.fishLog.findMany({
-        // Placeを含ませる
+    getFishLogs: async (_, { placeId }) => {
+      const fishLogs = await prisma.fishLog.findMany({
+        where: {
+          placeId: placeId, // 指定された placeId に一致するすべての FishLog を取得
+        },
         include: {
           place: {
             select: {
@@ -153,27 +163,48 @@ const resolvers = {
             },
           },
         },
-      })
-
-      //取得したデータをGraphQLレスポンスで返す前に変換する
-      return fishLogsData.map((fishLog) => {
-        return {
-          id: fishLog.id,
-          placeName: fishLog.place.name,
-          date: fishLog.date,
-          image: fishLog.image,
-          fishName: fishLog.fishName,
-          weather: fishLog.weather,
-          size: fishLog.size,
-          isSpringTide: fishLog.isSpringTide,
-          isMiddleTide: fishLog.isMiddleTide,
-          isNeapTide: fishLog.isNeapTide,
-          isNagashio: fishLog.isNagashio,
-          isWakashio: fishLog.isWakashio,
-        }
-      })
+      });
+    
+      // 取得したデータをGraphQLレスポンスで返す前に変換する
+      return fishLogs.map((fishLog) => ({
+        id: fishLog.id,
+        placeId: fishLog.placeId,
+        placeName: fishLog.place.name,
+        date: fishLog.date,
+        fishName: fishLog.fishName,
+      }));
     },
-  },
+    
+    getFishLog: async (_, {id }) => {
+      const fishLogs = await prisma.fishLog.findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          place: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+    
+      return {
+        id: fishLogs.id,
+        placeId: fishLogs.placeId,
+        placeName:fishLogs.place.name,
+        date: fishLogs.date,
+        image: fishLogs.image,
+        fishName: fishLogs.fishName,
+        weather: fishLogs.weather,
+        size: fishLogs.size,
+        isSpringTide: fishLogs.isSpringTide,
+        isMiddleTide: fishLogs.isMiddleTide,
+        isNeapTide: fishLogs.isNeapTide,
+        isNagashio: fishLogs.isNagashio,
+        isWakashio: fishLogs.isWakashio,
+      };
+    }},
 
   //データ更新
   Mutation: {
