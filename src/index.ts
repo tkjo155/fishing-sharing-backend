@@ -4,6 +4,7 @@ import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
 import createPlace from './lib/createPlace'
 import createFishLog from './lib/createFishlogs'
+import deletePlace from './lib/deleteFishlogs'
 import express from 'express'
 import http from 'http'
 import cors from 'cors'
@@ -74,16 +75,20 @@ type Place {
   type InputFishLog{
     id: ID!
     placeId:Int
-    date: String,
-    image: String,
-    fishName: String,
-    weather: String,
-    size: Int,
-    isSpringTide: Boolean,
-    isMiddleTide: Boolean,
-    isNeapTide: Boolean,
-    isNagashio: Boolean,
+    date: String
+    image: String
+    fishName: String
+    weather: String
+    size: Int
+    isSpringTide: Boolean
+    isMiddleTide: Boolean
+    isNeapTide: Boolean
+    isNagashio: Boolean
     isWakashio: Boolean
+  }
+
+  input DeletePlace {
+    id:ID
   }
 
   type Query {
@@ -95,8 +100,9 @@ type Place {
   }
 
   type Mutation {
-    createPlace(create:CreatePlace):InputPlace,
+    createPlace(create:CreatePlace):InputPlace
     createFishLog(create:CreateFishLog):InputFishLog
+    deletePlace(delete:DeletePlace):Place
   }
 
 `
@@ -244,6 +250,7 @@ const resolvers = {
         isWakashio,
       )
     },
+    deletePlace: async (_: any, { delete: { id } }) => await deletePlace(id),
   },
 }
 
