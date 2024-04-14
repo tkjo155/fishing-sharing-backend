@@ -14,7 +14,7 @@ const deletePlace = async (id: number): Promise<Place> => {
       return result;
     } catch (err) {
       await prisma.$disconnect();
-      throw new Error(`Failed update tasks. detail: ${err}`);
+      throw new Error(`Failed delete place. detail: ${err}`);
     }
   };
 
