@@ -63,7 +63,7 @@ const createFishLog = async (
     //データベースとの対話が完了したらprisma接続を閉じる
     await prisma.$disconnect();
     // エラーを再スローして呼び出し元に伝える
-    throw new Error(`Failed to create fish log. detail: ${err}`);
+    throw new Error(`Failed to create fishlog. detail: ${err}`);
   }
 };
 
