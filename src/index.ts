@@ -4,7 +4,8 @@ import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
 import createPlace from './lib/createPlace'
 import createFishLog from './lib/createFishlogs'
-import deletePlace from './lib/deleteFishlogs'
+import deletePlace from './lib/deletePlace'
+import deleteFishLog from './lib/deleteFishlog'
 import express from 'express'
 import http from 'http'
 import cors from 'cors'
@@ -91,6 +92,10 @@ type Place {
     id:ID
   }
 
+  input DeleteFishLog {
+    id:ID
+  }
+
   type Query {
     getPlace(id:Int!): Place
     getAllPlaces:[Place]
@@ -103,6 +108,7 @@ type Place {
     createPlace(create:CreatePlace):InputPlace
     createFishLog(create:CreateFishLog):InputFishLog
     deletePlace(delete:DeletePlace):Place
+    deleteFishLog(delete:DeleteFishLog):FishLog
   }
 
 `
@@ -251,8 +257,8 @@ const resolvers = {
       )
     },
     deletePlace: async (_: any, { delete: { id } }) => await deletePlace(id),
-  },
-}
+    deleteFishLog: async (_: any, { delete: { id } }) => await deleteFishLog(id),
+}}
 
 export default resolvers
 
