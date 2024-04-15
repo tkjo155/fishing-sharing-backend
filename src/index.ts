@@ -40,6 +40,8 @@ type Place {
     image: String
     fishName: String
     isSunny: Boolean
+    isRainy: Boolean
+    isCloudy: Boolean
     size: Int
     tide: String
   }
@@ -55,6 +57,8 @@ type Place {
     image: String
     fishName: String
     isSunny: Boolean
+    isRainy: Boolean
+    isCloudy: Boolean
     size: Int
     tide: String
   }
@@ -72,6 +76,8 @@ type Place {
     image: String
     fishName: String
     isSunny: Boolean
+    isRainy: Boolean
+    isCloudy: Boolean
     size: Int
     tide: String
   }
@@ -197,6 +203,8 @@ const resolvers = {
         image: fishLogs.image,
         fishName: fishLogs.fishName,
         isSunny: fishLogs.isSunny,
+        isRainy: fishLogs.isRainy,
+        isCloudy: fishLogs.isCloudy,
         size: fishLogs.size,
         tide: fishLogs.tide,
       };
@@ -217,6 +225,8 @@ const resolvers = {
           image,
           fishName,
           isSunny,
+          isRainy,
+          isCloudy,
           size,
           tide,
         },
@@ -228,6 +238,8 @@ const resolvers = {
         image,
         fishName,
         isSunny,
+        isRainy,
+        isCloudy,
         size,
         tide,
       )

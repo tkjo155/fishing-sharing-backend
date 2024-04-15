@@ -23,6 +23,8 @@ CREATE TABLE "FishLog" (
     "image" TEXT NOT NULL,
     "fishName" TEXT NOT NULL,
     "isSunny" BOOLEAN NOT NULL,
+    "isRainy" BOOLEAN NOT NULL,
+    "isCloudy" BOOLEAN NOT NULL,
     "size" INTEGER NOT NULL,
     "tide" TEXT NOT NULL,
 

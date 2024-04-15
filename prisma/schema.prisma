@@ -29,6 +29,8 @@ model FishLog {
  image String
  fishName String
  isSunny Boolean
+ isRainy Boolean
+ isCloudy Boolean
  size Int
  tide String
  place Place @relation(fields: [placeId], references: [id])

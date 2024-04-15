@@ -28,6 +28,8 @@ const createFishLog = async (
   image: string,
   fishName: string,
   isSunny: boolean,
+  isRainy: boolean,
+  isCloudy: boolean,
   size: number,
   tide: string,
 ): Promise<FishLog> => {
@@ -42,6 +44,8 @@ const createFishLog = async (
         image,
         fishName,
         isSunny,
+        isRainy,
+        isCloudy,
         size,
         tide
       },
