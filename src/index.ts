@@ -39,13 +39,13 @@ type Place {
     date: String
     image: String
     fishName: String
-    weather: String
+    weather: Boolean
     size: Int
-    isSpringTide: Boolean
-    isMiddleTide: Boolean
-    isNeapTide: Boolean
-    isNagashio: Boolean
-    isWakashio: Boolean
+    isSpringTide: String
+    isMiddleTide: String
+    isNeapTide: String
+    isNagashio: String
+    isWakashio: String
   }
   
   input CreatePlace {
@@ -58,13 +58,13 @@ type Place {
     date: String
     image: String
     fishName: String
-    weather: String
+    weather: Boolean
     size: Int
-    isSpringTide: Boolean
-    isMiddleTide: Boolean
-    isNeapTide: Boolean
-    isNagashio: Boolean
-    isWakashio: Boolean
+    isSpringTide: String
+    isMiddleTide: String
+    isNeapTide: String
+    isNagashio: String
+    isWakashio: String
   }
 
   type InputPlace{
@@ -79,13 +79,13 @@ type Place {
     date: String
     image: String
     fishName: String
-    weather: String
+    weather: Boolean
     size: Int
-    isSpringTide: Boolean
-    isMiddleTide: Boolean
-    isNeapTide: Boolean
-    isNagashio: Boolean
-    isWakashio: Boolean
+    isSpringTide: String
+    isMiddleTide: String
+    isNeapTide: String
+    isNagashio: String
+    isWakashio: String
   }
 
   input DeletePlace {

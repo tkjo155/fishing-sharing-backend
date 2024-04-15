@@ -27,13 +27,13 @@ const createFishLog = async (
   date: string,
   image: string,
   fishName: string,
-  weather: string,
+  weather: boolean,
   size: number,
-  isSpringTide: boolean,
-  isMiddleTide: boolean,
-  isNeapTide: boolean,
-  isNagashio: boolean,
-  isWakashio: boolean
+  isSpringTide: string,
+  isMiddleTide: string,
+  isNeapTide: string,
+  isNagashio: string,
+  isWakashio: string
 ): Promise<FishLog> => {
   //文字列とサイズの数値が制約を満たしているかどうかを検証する関数を呼び出す
   try {
