@@ -22,13 +22,9 @@ CREATE TABLE "FishLog" (
     "date" TEXT NOT NULL,
     "image" TEXT NOT NULL,
     "fishName" TEXT NOT NULL,
-    "weather" BOOLEAN NOT NULL,
+    "isSunny" BOOLEAN NOT NULL,
     "size" INTEGER NOT NULL,
-    "isSpringTide" TEXT NOT NULL,
-    "isMiddleTide" TEXT NOT NULL,
-    "isNeapTide" TEXT NOT NULL,
-    "isNagashio" TEXT NOT NULL,
-    "isWakashio" TEXT NOT NULL,
+    "tide" TEXT NOT NULL,
 
     CONSTRAINT "FishLog_pkey" PRIMARY KEY ("id")
 );

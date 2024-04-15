@@ -39,13 +39,9 @@ type Place {
     date: String
     image: String
     fishName: String
-    weather: Boolean
+    isSunny: Boolean
     size: Int
-    isSpringTide: String
-    isMiddleTide: String
-    isNeapTide: String
-    isNagashio: String
-    isWakashio: String
+    tide: String
   }
   
   input CreatePlace {
@@ -58,13 +54,9 @@ type Place {
     date: String
     image: String
     fishName: String
-    weather: Boolean
+    isSunny: Boolean
     size: Int
-    isSpringTide: String
-    isMiddleTide: String
-    isNeapTide: String
-    isNagashio: String
-    isWakashio: String
+    tide: String
   }
 
   type InputPlace{
@@ -79,13 +71,9 @@ type Place {
     date: String
     image: String
     fishName: String
-    weather: Boolean
+    isSunny: Boolean
     size: Int
-    isSpringTide: String
-    isMiddleTide: String
-    isNeapTide: String
-    isNagashio: String
-    isWakashio: String
+    tide: String
   }
 
   input DeletePlace {
@@ -208,13 +196,9 @@ const resolvers = {
         date: fishLogs.date,
         image: fishLogs.image,
         fishName: fishLogs.fishName,
-        weather: fishLogs.weather,
+        isSunny: fishLogs.isSunny,
         size: fishLogs.size,
-        isSpringTide: fishLogs.isSpringTide,
-        isMiddleTide: fishLogs.isMiddleTide,
-        isNeapTide: fishLogs.isNeapTide,
-        isNagashio: fishLogs.isNagashio,
-        isWakashio: fishLogs.isWakashio,
+        tide: fishLogs.tide,
       };
     }},
 
@@ -232,13 +216,9 @@ const resolvers = {
           date,
           image,
           fishName,
-          weather,
+          isSunny,
           size,
-          isSpringTide,
-          isMiddleTide,
-          isNeapTide,
-          isNagashio,
-          isWakashio,
+          tide,
         },
       },
     ) => {
@@ -247,13 +227,9 @@ const resolvers = {
         date,
         image,
         fishName,
-        weather,
+        isSunny,
         size,
-        isSpringTide,
-        isMiddleTide,
-        isNeapTide,
-        isNagashio,
-        isWakashio,
+        tide,
       )
     },
     deletePlace: async (_: any, { delete: { id } }) => await deletePlace(id),
