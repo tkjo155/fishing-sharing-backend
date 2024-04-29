@@ -28,13 +28,11 @@ model FishLog {
  date String
  image String
  fishName String
- weather String
+ isSunny Boolean
+ isRainy Boolean
+ isCloudy Boolean
  size Int
- isSpringTide Boolean
- isMiddleTide Boolean
- isNeapTide Boolean
- isNagashio Boolean
- isWakashio Boolean
+ tide String
  place Place @relation(fields: [placeId], references: [id])
 }
 

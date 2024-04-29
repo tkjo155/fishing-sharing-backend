@@ -27,13 +27,11 @@ const createFishLog = async (
   date: string,
   image: string,
   fishName: string,
-  weather: string,
+  isSunny: boolean,
+  isRainy: boolean,
+  isCloudy: boolean,
   size: number,
-  isSpringTide: boolean,
-  isMiddleTide: boolean,
-  isNeapTide: boolean,
-  isNagashio: boolean,
-  isWakashio: boolean
+  tide: string,
 ): Promise<FishLog> => {
   //文字列とサイズの数値が制約を満たしているかどうかを検証する関数を呼び出す
   try {
@@ -45,13 +43,11 @@ const createFishLog = async (
         date,
         image,
         fishName,
-        weather,
+        isSunny,
+        isRainy,
+        isCloudy,
         size,
-        isSpringTide,
-        isMiddleTide,
-        isNeapTide,
-        isNagashio,
-        isWakashio,
+        tide
       },
     });
     //データベースとの対話が完了したらprisma接続を閉じる
