@@ -9,6 +9,7 @@ import deleteFishLog from './lib/deleteFishlog'
 import express from 'express'
 import http from 'http'
 import cors from 'cors'
+import updatePlace from './lib/updatePlace'
 
 const prisma = new PrismaClient()
 
@@ -90,6 +91,12 @@ type Place {
     id:ID
   }
 
+  input EditPlace {
+    id: ID
+    name: String
+    prefectureId:Int
+  }
+
   type Query {
     getPlace(id:Int!): Place
     getAllPlaces:[Place]
@@ -103,6 +110,7 @@ type Place {
     createFishLog(create:CreateFishLog):InputFishLog
     deletePlace(delete:DeletePlace):Place
     deleteFishLog(delete:DeleteFishLog):FishLog
+    updatePlace(edit:EditPlace):Place
   }
 
 `
@@ -246,6 +254,8 @@ const resolvers = {
     },
     deletePlace: async (_: any, { delete: { id } }) => await deletePlace(id),
     deleteFishLog: async (_: any, { delete: { id } }) => await deleteFishLog(id),
+    updatePlace: async (_: any, { edit: { id, name, prefectureId } }) =>
+      await updatePlace(id, name, prefectureId),
 }}
 
 export default resolvers
