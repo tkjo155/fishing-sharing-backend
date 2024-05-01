@@ -10,6 +10,8 @@ import express from 'express'
 import http from 'http'
 import cors from 'cors'
 import updatePlace from './lib/updatePlace'
+import updateFishLog from './lib/updateFishlog'
+
 
 const prisma = new PrismaClient()
 
@@ -97,6 +99,18 @@ type Place {
     prefectureId:Int
   }
 
+  input EditFishLog {
+    id: ID
+    date: String
+    image: String
+    fishName: String
+    isSunny: Boolean
+    isRainy: Boolean
+    isCloudy: Boolean
+    size: Int
+    tide: String
+  }
+
   type Query {
     getPlace(id:Int!): Place
     getAllPlaces:[Place]
@@ -111,6 +125,7 @@ type Place {
     deletePlace(delete:DeletePlace):Place
     deleteFishLog(delete:DeleteFishLog):FishLog
     updatePlace(edit:EditPlace):Place
+    updateFishLog(edit:EditFishLog):FishLog
   }
 
 `
@@ -126,6 +141,9 @@ const resolvers = {
               name: true,
             },
           },
+        },
+        orderBy: {
+          id: 'desc', // id を降順にソート
         },
       })
       //取得したデータをGraphQLレスポンスで返す前に変換する
@@ -176,6 +194,9 @@ const resolvers = {
               name: true,
             },
           },
+        },
+        orderBy: {
+          id: 'desc', // id を降順にソート
         },
       });
     
@@ -256,6 +277,8 @@ const resolvers = {
     deleteFishLog: async (_: any, { delete: { id } }) => await deleteFishLog(id),
     updatePlace: async (_: any, { edit: { id, name, prefectureId } }) =>
       await updatePlace(id, name, prefectureId),
+    updateFishLog: async (_: any, { edit: { id, date, image, fishName, isSunny, isRainy, isCloudy, size, tide} }) =>
+      await updateFishLog(id, date, image, fishName, isSunny, isRainy, isCloudy, size, tide),
 }}
 
 export default resolvers
