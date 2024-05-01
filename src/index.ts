@@ -101,7 +101,6 @@ type Place {
 
   input EditFishLog {
     id: ID
-    placeId: Int
     date: String
     image: String
     fishName: String
@@ -272,8 +271,8 @@ const resolvers = {
     deleteFishLog: async (_: any, { delete: { id } }) => await deleteFishLog(id),
     updatePlace: async (_: any, { edit: { id, name, prefectureId } }) =>
       await updatePlace(id, name, prefectureId),
-    updateFishLog: async (_: any, { edit: { id, placeId, date, image, fishName, isSunny, isRainy, isCloudy, size, tide} }) =>
-      await updateFishLog(id, placeId, date, image, fishName, isSunny, isRainy, isCloudy, size, tide),
+    updateFishLog: async (_: any, { edit: { id, date, image, fishName, isSunny, isRainy, isCloudy, size, tide} }) =>
+      await updateFishLog(id, date, image, fishName, isSunny, isRainy, isCloudy, size, tide),
 }}
 
 export default resolvers

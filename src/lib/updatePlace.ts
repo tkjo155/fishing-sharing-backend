@@ -30,9 +30,8 @@ const updatePlace = async (
         prefectureId: prefectureId,
       },
     });
-    console.log(result);
     await prisma.$disconnect();
-    
+
     return result;
   } catch (err) {
     await prisma.$disconnect();

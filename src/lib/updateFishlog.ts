@@ -23,7 +23,6 @@ const validateFishLogParameters = (fishName: string, size: number): void => {
 
 const updateFishlog = async (
     id: number,
-    placeId: number,
     date: string,
     image: string,
     fishName: string,
@@ -39,7 +38,6 @@ const updateFishlog = async (
         const result = await prisma.fishLog.update({
             where: { id: Number(id) },
             data: {
-                placeId,
                 date,
                 image,
                 fishName,
@@ -50,9 +48,8 @@ const updateFishlog = async (
                 tide
             },
         });
-        console.log(result);
         await prisma.$disconnect();
-        
+
         return result;
     } catch (err) {
         await prisma.$disconnect();
