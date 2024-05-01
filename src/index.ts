@@ -142,6 +142,9 @@ const resolvers = {
             },
           },
         },
+        orderBy: {
+          id: 'desc', // id を降順にソート
+        },
       })
       //取得したデータをGraphQLレスポンスで返す前に変換する
       return placesData.map((place) => {
@@ -191,6 +194,9 @@ const resolvers = {
               name: true,
             },
           },
+        },
+        orderBy: {
+          id: 'desc', // id を降順にソート
         },
       });
     
